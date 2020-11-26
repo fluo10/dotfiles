@@ -1,6 +1,3 @@
-[user]
-	email = fluo10+git@fireturtle.net
-	name = fluo10
 [core]
 	editor = nvim
 [pull]
