@@ -4,3 +4,6 @@
 	rebase = false
 [alias]
 	lol = log --graph --decorate --pretty=oneline --all --abbrev-commit
+[user]
+	email = fluo10+git@fireturtle.net
+	name = fluo10
