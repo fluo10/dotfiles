@@ -4,6 +4,10 @@
 	rebase = false
 [alias]
 	lol = log --graph --decorate --pretty=oneline --all --abbrev-commit --date-order
+[checkout]
+	defaultRemote = origin
+[init]
+	defaultBranch =  main
 [user]
 	email = fluo10.dev@fireturtle.net
 	name = fluo10
