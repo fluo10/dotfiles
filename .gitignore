@@ -1,6 +1,7 @@
-*
+/*
 !/.bin
 !/.config
+!/.etc
 !/.zshrc
 !/.gitconfig
 
