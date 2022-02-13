@@ -1,6 +1,7 @@
 /*
 !/.bin
-!/.config
+/.config
+!/.config/.nvim
 !/.etc
 !/.zshrc
 !/.gitconfig
