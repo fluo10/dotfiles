@@ -1,8 +1,16 @@
 /*
+!/.bashrc
+!/.bash_profile
 !/.bin
-/.config
-!/.config/.nvim
+!/.config
+/.config/*
+!/.config/nvim
+!/.config/fcitx5
 !/.etc
-!/.zshrc
 !/.gitconfig
+!/.profile
+!/.ssh
+/.ssh/*
+!/.ssh/authorised_keys
+!/.zshrc
 
