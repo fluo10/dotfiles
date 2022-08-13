@@ -60,8 +60,13 @@ alias free='free -m'                                            # Show sizes in 
 alias gitu='git add . && git commit && git push'
 
 # Theming section  
-autoload -U compinit colors zcalc
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+fi
+
+autoload -Uz compinit
 compinit -d
+autoload colors zcalc
 colors
 
 # Color man pages
@@ -74,12 +79,29 @@ export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;36m'
 export LESS=-r
 
+# ## Plugins section: Enable fish style features
 
-## Plugins section: Enable fish style features
 # Use syntax highlighting
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# Use history substring search
-source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+case "$OSTYPE" in
+  darwin*)
+    # export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlighting/highlighters
+    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  ;;
+  linux*)
+    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  ;;
+esac
+
+# ## Use history substring search
+case "$OSTYPE" in
+  darwin*)
+    source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+  ;;
+  linux*)
+    source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+  ;;
+esac
+
 # bind UP and DOWN arrow keys to history substring search
 zmodload zsh/terminfo
 bindkey "$terminfo[kcuu1]" history-substring-search-up
@@ -103,7 +125,12 @@ setopt prompt_subst
 # Maia prompt
 PROMPT="%B%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%{$reset_color%}%b " # Print some system information when the shell is first started
 # Print a greeting message when shell is started
-echo $USER@$HOST  $(uname -srm) $(lsb_release -rcs)
+
+case "$OSTYPE" in 
+  linux*)
+    echo $USER@$HOST  $(uname -srm) $(lsb_release -rcs)
+  ;;
+esac
 ## Prompt on right side:
 #  - shows status of git when in git repository (code adapted from https://techanic.net/2012/12/30/my_git_prompt_for_zsh.html)
 #  - shows exit status of previous command (if previous command finished with an error)
@@ -170,35 +197,45 @@ function git_prompt_string() {
  #RPROMPT="%(?.%{$fg[green]%}✓ %{$reset_color%}.%{$fg[red]%}✗ %{$reset_color%})"
 
 # Apply different settigns for different terminals
-case $(basename "$(cat "/proc/$PPID/comm")") in
-  login)
-    	RPROMPT="%{$fg[red]%} %(?..[%?])" 
-    	alias x='startx ~/.xinitrc'      # Type name of desired desktop after x, xinitrc is configured for it
+case "$OSTYPE" in 
+  darwin*)
+    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh	
+    ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
     ;;
-#  'tmux: server')
-#        RPROMPT='$(git_prompt_string)'
-#		## Base16 Shell color themes.
-#		#possible themes: 3024, apathy, ashes, atelierdune, atelierforest, atelierhearth,
-#		#atelierseaside, bespin, brewer, chalk, codeschool, colors, default, eighties, 
-#		#embers, flat, google, grayscale, greenscreen, harmonic16, isotope, londontube,
-#		#marrakesh, mocha, monokai, ocean, paraiso, pop (dark only), railscasts, shapesifter,
-#		#solarized, summerfruit, tomorrow, twilight
-#		#theme="eighties"
-#		#Possible variants: dark and light
-#		#shade="dark"
-#		#BASE16_SHELL="/usr/share/zsh/scripts/base16-shell/base16-$theme.$shade.sh"
-#		#[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
-#		# Use autosuggestion
-#		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-#		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-#  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-#     ;;
-  *)
-        RPROMPT='$(git_prompt_string)'
-		# Use autosuggestion
-		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+  linux*)
+    case $(basename "$(cat "/proc/$PPID/comm")") in
+      login)
+        	RPROMPT="%{$fg[red]%} %(?..[%?])" 
+        	alias x='startx ~/.xinitrc'      # Type name of desired desktop after x, xinitrc is configured for it
+        ;;
+    #  'tmux: server')
+    #        RPROMPT='$(git_prompt_string)'
+    #		## Base16 Shell color themes.
+    #		#possible themes: 3024, apathy, ashes, atelierdune, atelierforest, atelierhearth,
+    #		#atelierseaside, bespin, brewer, chalk, codeschool, colors, default, eighties, 
+    #		#embers, flat, google, grayscale, greenscreen, harmonic16, isotope, londontube,
+    #		#marrakesh, mocha, monokai, ocean, paraiso, pop (dark only), railscasts, shapesifter,
+    #		#solarized, summerfruit, tomorrow, twilight
+    #		#theme="eighties"
+    #		#Possible variants: dark and light
+    #		#shade="dark"
+    #		#BASE16_SHELL="/usr/share/zsh/scripts/base16-shell/base16-$theme.$shade.sh"
+    #		#[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+    #		# Use autosuggestion
+    #		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+    #		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+    #  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+    #     ;;
+      *)
+            RPROMPT='$(git_prompt_string)'
+    		# Use autosuggestion
+            #
+    		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+    		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+      		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+        ;;
+    esac
     ;;
 esac
 
