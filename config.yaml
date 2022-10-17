@@ -1,0 +1,43 @@
+# Config file for dotdrop
+config:
+  backup: true
+  banner: true
+  create: true
+  dotpath: .
+  ignoreempty: false
+  keepdot: false
+  longkey: false
+  showdiff: false
+  workdir: ~/.config/dotdrop
+dotfiles:
+  f_bash_profile:
+    dst: ~/.bash_profile
+    src: .bash_profile
+  f_bashrc:
+    dst: ~/.bashrc
+    src: .bashrc
+  f_profile:
+    dst: ~/.profile
+    src: .profile
+  f_gitconfig:
+    dst: ~/.gitconfig
+    src: .gitconfig
+  f_zshrc:
+    dst: ~/.zshrc
+    src: .zshrc
+  d_neovim:
+    dst: ~/.config/nvim
+    src: .config/nvim
+  f_ssh_authorized_keys:
+    dst: ~/.ssh/authorized_keys
+    src: .ssh/authorized_keys
+profiles:
+  all:
+    dotfiles:
+    - f_bash_profile
+    - f_bashrc
+    - f_profile
+    - f_gitconfig
+    - f_zshrc
+    - d_neovim
+    - f_ssh_authorized_keys
