@@ -28,3 +28,7 @@ fi
 
 export EDITOR=vim
 export VISUAL=vim
+
+if [ -f "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+fi
