@@ -1,4 +1,5 @@
 # Source manjaro-zsh-configuration
+
 ## Options section
 setopt correct                                                  # Auto correct mistakes
 setopt extendedglob                                             # Extended globbing. Allows using regular expressions with *
@@ -64,6 +65,16 @@ if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
 fi
 
+# Install zinit if not exists
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [[ ! -e "$ZINIT_HOME" ]]; then
+    mkdir -p "$(dirname $ZINIT_HOME)"
+    git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+source "${ZINIT_HOME}/zinit.zsh"
+zinit self-update
+
 autoload -Uz compinit
 compinit -d
 autoload colors zcalc
@@ -79,28 +90,21 @@ export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;36m'
 export LESS=-r
 
-# ## Plugins section: Enable fish style features
+# Configuration by OS
+# if [[ "$OSTYPE" == darwin* ]] then
+#    export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlighting/highlighters
+#    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#    source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+#    source $(brew--prefix)/opt/zinit/zinit.zsh
+# elif cat /proc/version | grep -q MANJARO; then 
+# elif cat /proc/version | grep -q UBUNTU; then
+# fi
 
-# Use syntax highlighting
-case "$OSTYPE" in
-  darwin*)
-    # export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlighting/highlighters
-    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-  ;;
-  linux*)
-    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-  ;;
-esac
-
-# ## Use history substring search
-case "$OSTYPE" in
-  darwin*)
-    source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-  ;;
-  linux*)
-    source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-  ;;
-esac
+# Install regualr plugins
+zinit light zsh-users/zsh-autosuggestions 
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-history-substring-search
+zinit light zsh-users/zsh-completions
 
 # bind UP and DOWN arrow keys to history substring search
 zmodload zsh/terminfo
@@ -115,15 +119,13 @@ if [[ -r /usr/share/zsh/functions/command-not-found.zsh ]]; then
     export PKGFILE_PROMPT_INSTALL_MISSING=1
 fi
 
-
-
-# Use manjaro zsh prompt# enable substitution for prompt
+# enable substitution for prompt
 setopt prompt_subst
 
 # Prompt (on left side) similar to default bash prompt, or redhat zsh prompt with colors
- #PROMPT="%(!.%{$fg[red]%}[%n@%m %1~]%{$reset_color%}# .%{$fg[green]%}[%n@%m %1~]%{$reset_color%}$ "
+PROMPT="%(!.%{$fg[red]%}[%n@%m %1~]%{$reset_color%}# .%{$fg[green]%}[%n@%m %1~]%{$reset_color%}$ "
 # Maia prompt
-PROMPT="%B%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%{$reset_color%}%b " # Print some system information when the shell is first started
+# PROMPT="%B%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%{$reset_color%}%b " # Print some system information when the shell is first started
 # Print a greeting message when shell is started
 
 case "$OSTYPE" in 
@@ -191,24 +193,26 @@ function git_prompt_string() {
   [ ! -n "$git_where" ] && echo "%{$fg[red]%} %(?..[%?])"
 }
 
+RPROMPT='$(git_prompt_string)'
+
 # Right prompt with exit status of previous command if not successful
  #RPROMPT="%{$fg[red]%} %(?..[%?])" 
 # Right prompt with exit status of previous command marked with ✓ or ✗
  #RPROMPT="%(?.%{$fg[green]%}✓ %{$reset_color%}.%{$fg[red]%}✗ %{$reset_color%})"
 
 # Apply different settigns for different terminals
-case "$OSTYPE" in 
-  darwin*)
-    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh	
-    ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-    ;;
-  linux*)
-    case $(basename "$(cat "/proc/$PPID/comm")") in
-      login)
-        	RPROMPT="%{$fg[red]%} %(?..[%?])" 
-        	alias x='startx ~/.xinitrc'      # Type name of desired desktop after x, xinitrc is configured for it
-        ;;
+# case "$OSTYPE" in 
+#   darwin*)
+#     source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh	
+#     ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+#     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+#     ;;
+#   linux*)
+#     case $(basename "$(cat "/proc/$PPID/comm")") in
+#       login)
+#         	RPROMPT="%{$fg[red]%} %(?..[%?])" 
+#         	alias x='startx ~/.xinitrc'      # Type name of desired desktop after x, xinitrc is configured for it
+#         ;;
     #  'tmux: server')
     #        RPROMPT='$(git_prompt_string)'
     #		## Base16 Shell color themes.
@@ -227,23 +231,20 @@ case "$OSTYPE" in
     #		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
     #  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
     #     ;;
-      *)
-            RPROMPT='$(git_prompt_string)'
-    		# Use autosuggestion
-            #
-    		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-    		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-      		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-        ;;
-    esac
-    ;;
-esac
+#       *)
+#             RPROMPT='$(git_prompt_string)'
+#     		# Use autosuggestion
+#             #
+#     		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+#     		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+#       		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+#         ;;
+#     esac
+#     ;;
+# esac
 
 ## Prompt theme
 
-autoload -Uz promptinit
-fpath=("$HOME/.zprompts" "$fpath[@]")
-promptinit
-
-prompt adam2
-
+#autoload -Uz promptinit
+#fpath=("$HOME/.zprompts" "$fpath[@]")
+#promptinit
