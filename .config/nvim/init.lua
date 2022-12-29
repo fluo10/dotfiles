@@ -1,3 +1,8 @@
+vim.g.loaded_netrw =1
+vim.g.loaded_netrwPlugin = 1
+
+vim.opt.termguicolors = true
+
 vim.opt.number = true
 vim.opt.expandtab = true
 vim.opt.tabstop = 4
@@ -13,3 +18,6 @@ vim.cmd([[
     autocmd BufWritePost plugins.lua source <afile> | PackerCompile
   augroup end
 ]])
+
+require("nvim-web-devicons").get_icons()
+require("nvim-tree").setup()

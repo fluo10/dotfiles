@@ -16,7 +16,7 @@ return require('packer').startup(function(use)
     use {
         "nvim-neorg/neorg",
         ft = "norg",
-        --cmd = "Neorg",
+        cmd = "Neorg",
         --priority = 30,
         after = 'nvim-treesitter',
         run = ":Neorg sync-parsers",
@@ -24,9 +24,32 @@ return require('packer').startup(function(use)
             require("neorg").setup {
                 load = {
                     ["core.defaults"] = {},
+                    ["core.norg.concealer"] = {},
+                    ["core.norg.dirman"] = {
+                        config = {
+                          workspaces = {
+                            root = "~/Documents/journal",
+                            workspace = "~/Documents/journal/workspace",
+                          },
+                          index = "index.norg",
+                          default_workspace = "workspace",
+                        },
+                    },
+                    --["core.norg.journal"] = {
+                    --  config = {
+                    --    workspace = "workspace"
+                    --  },
+                    --},
                 }
             }
         end,
         requires = "nvim-lua/plenary.nvim"
+    }
+    use {
+      "nvim-tree/nvim-tree.lua",
+      requires = {
+        "nvim-tree/nvim-web-devicons",
+      },
+      --tag= "nightly",
     }
 end)
