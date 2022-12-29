@@ -1,4 +1,3 @@
-# Config file for dotdrop
 config:
   backup: true
   banner: true
@@ -31,7 +30,7 @@ dotfiles:
   f_ssh_authorized_keys:
     dst: ~/.ssh/authorized_keys
     src: .ssh/authorized_keys
-    chmod: 600
+    chmod: '600'
 profiles:
   all:
     dotfiles:
