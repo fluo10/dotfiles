@@ -41,18 +41,17 @@ return require('packer').startup(function(use)
                     ["core.norg.dirman"] = {
                         config = {
                           workspaces = {
-                            root = "~/Documents/journal",
-                            workspace = "~/Documents/journal/workspace",
+                            workspace = "~/Documents/journal",
                           },
                           index = "index.norg",
                           default_workspace = "workspace",
                         },
                     },
-                    --["core.norg.journal"] = {
-                    --  config = {
-                    --    workspace = "workspace"
-                    --  },
-                    --},
+                    ["core.norg.journal"] = {
+                      config = {
+                        strategy = "%Y/%m/%Y-%m-%d-%a.norg",
+                      },
+                    },
                 }
             }
         end,
