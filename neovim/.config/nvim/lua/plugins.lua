@@ -71,19 +71,34 @@ return require('packer').startup(function(use)
             require("neorg").setup {
                 load = {
                     ["core.defaults"] = {},
-                    ["core.norg.concealer"] = {},
+                    ["core.norg.concealer"] = {
+                      config = {
+                        icons = {
+                          todo = {
+                            undone = { icon = " " }
+                          },
+                        },
+                      },
+                    },
                     ["core.norg.dirman"] = {
                         config = {
                           workspaces = {
-                            workspace = "~/Documents/journal",
+                            root = "~/Documents/planner",
+                            life = "~/Documents/planner/life",
+                            computer = "~/Documents/planner/computer",
+                            --journal = "~/Documents/planner/journal"
+
                           },
                           index = "index.norg",
-                          default_workspace = "workspace",
+                          default_workspace = "root",
                         },
                     },
                     ["core.norg.journal"] = {
                       config = {
+                        workspace = "root",
+                        journal_folder = "journal",
                         strategy = "%Y/%m/%Y-%m-%d-%a.norg",
+                        template_name = ".template.norg"
                       },
                     },
                 }
