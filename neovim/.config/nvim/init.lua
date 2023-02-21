@@ -9,6 +9,15 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 2
 
 --require("init_packer")
+--
+
+vim.api.nvim_create_autocmd( { 'BufNewFile', 'BufRead', }, {
+  pattern = { '*.md', '*.norg' },
+  callback = function() 
+    vim.opt.spell = true
+    vim.opt.spelllang = { "en_us" ,"en_gb" ,"cjk" }
+  end
+})
 
 require('plugins')
 
