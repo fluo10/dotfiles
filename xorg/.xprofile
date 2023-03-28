@@ -1,0 +1,4 @@
+for f in ~/.xprofile.d/*
+  do source $f
+done
+
