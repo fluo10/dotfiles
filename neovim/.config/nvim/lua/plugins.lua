@@ -83,21 +83,17 @@ return require('packer').startup(function(use)
                     ["core.norg.dirman"] = {
                         config = {
                           workspaces = {
-                            root = "~/Documents/planner",
-                            life = "~/Documents/planner/life",
-                            computer = "~/Documents/planner/computer",
-                            --journal = "~/Documents/planner/journal"
-
+                            default = "~/.journal",
                           },
                           index = "index.norg",
-                          default_workspace = "root",
+                          default_workspace = "default",
                         },
                     },
                     ["core.norg.journal"] = {
                       config = {
-                        workspace = "root",
-                        journal_folder = "journal",
-                        strategy = "%Y/%m/%Y-%m-%d-%a.norg",
+                        workspace = "default",
+                        journal_folder = "logs",
+                        strategy = "%Y/%m/%d-%a/index.norg",
                         template_name = ".template.norg"
                       },
                     },
@@ -113,6 +109,46 @@ return require('packer').startup(function(use)
       },
       --tag= "nightly",
     }
+    use {
+	  "L3MON4D3/LuaSnip",
+	  -- follow latest release.
+	  tag = "v1.2.*",
+      -- install jsregexp (optional!:).
+	  run = "make install_jsregexp"
+    }
+    use 'neovim/nvim-lspconfig'
+    use 'hrsh7th/cmp-nvim-lsp'
+    use 'hrsh7th/cmp-buffer'
+    use 'hrsh7th/cmp-path'
+    use 'hrsh7th/cmp-cmdline'
+    use 'saadparwaiz1/cmp_luasnip'
+    use {
+      'hrsh7th/nvim-cmp',
+      config = function ()
+        require'cmp'.setup {
+          snippet = {
+            expand = function(args)
+              require'luasnip'.lsp_expand(args.body)
+            end
+          },
+          window = {
+            -- completion = cmp.config.window.bordered(),
+            -- documentation = cmp.config.window.bordered(),
+          },
+          mapping = require'cmp'.mapping.preset.insert({
+            ['<C-d>'] = require'cmp'.mapping.scroll_docs(-4),
+            ['<C-f>'] = require'cmp'.mapping.scroll_docs(4),
+            ['<C-Space>'] = require'cmp'.mapping.complete(),
+            ['<CR>'] = require'cmp'.mapping.confirm({ select = true }),
+          }),
+          sources = {
+            { name = 'nvim_lsp' },
+            { name = 'luasnip' }, -- For luasnip users.
+          },
+        }
+      end
+  }
+  
   if packer_bootstrap then
     require('packer').sync()
   end
