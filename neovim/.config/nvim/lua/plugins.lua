@@ -83,17 +83,17 @@ return require('packer').startup(function(use)
                     ["core.norg.dirman"] = {
                         config = {
                           workspaces = {
-                            default = "~/.journal",
+                            journal = "~/.journal",
                           },
                           index = "index.norg",
-                          default_workspace = "default",
+                          default_workspace = "journal",
                         },
                     },
                     ["core.norg.journal"] = {
                       config = {
-                        workspace = "default",
+                        workspace = "journal",
                         journal_folder = "logs",
-                        strategy = "%Y/%m/%d-%a/index.norg",
+                        strategy = "%Y/%m/%d/index.norg",
                         template_name = ".template.norg"
                       },
                     },

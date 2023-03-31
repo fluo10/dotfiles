@@ -10,7 +10,13 @@ local d = ls.dynamic_node
 local r = ls.restore_node
 local events = require'luasnip.util.events'
 local ai = require'luasnip.nodes.absolute_indexer'
-
+function iso_weeknum(time)
+  local date = os.date("*t",time)
+  local year = date.year
+  local doy = date.yday
+  local dow = (date.wday + 5 ) % 7 + 1
+  return math.floor(( 10 + doy - dow ) / 7)
+end
 require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/lua/luasnippets"})
 
 -- function exists(name)
