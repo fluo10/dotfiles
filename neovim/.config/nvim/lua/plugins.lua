@@ -12,8 +12,13 @@ local ensure_packer = function()
 end
 
 local packer_bootstrap = ensure_packer()
-
---vim.cmd [[packadd packer.nvim]]
+      --vim.cmd [[packadd packer.nvim]]
+      --
+local has_words_before = function()
+  unpack = unpack or table.unpack
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
 
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
@@ -71,7 +76,7 @@ return require('packer').startup(function(use)
       require("neorg").setup {
         load = {
           ["core.defaults"] = {},
-          ["core.norg.concealer"] = {
+          ["core.concealer"] = {
             config = {
               icons = {
                 todo = {
@@ -80,7 +85,7 @@ return require('packer').startup(function(use)
               },
             },
           },
-          ["core.norg.dirman"] = {
+          ["core.dirman"] = {
             config = {
               workspaces = {
                 journal = "~/.journal",
@@ -89,7 +94,7 @@ return require('packer').startup(function(use)
               default_workspace = "journal",
             },
           },
-          ["core.norg.journal"] = {
+          ["core.journal"] = {
             config = {
               workspace = "journal",
               journal_folder = "logs",
@@ -139,12 +144,31 @@ return require('packer').startup(function(use)
           ['<C-f>'] = require'cmp'.mapping.scroll_docs(4),
           ['<C-Space>'] = require'cmp'.mapping.complete(),
           ['<CR>'] = require'cmp'.mapping.confirm({ select = true }),
+          ["<Tab>"] = require'cmp'.mapping(function(fallback)
+            if require'cmp'.visible() then
+              require'cmp'.select_next_item()
+            elseif require'luasnip'.expand_or_jumpable() then
+              require'luasnip'.expand_or_jump()
+            else
+              fallback()
+            end
+          end, {"i", "s"}),
+          ["<S-Tab>"] = require'cmp'.mapping(function(fallback)
+            if require'cmp'.visible() then
+              require'cmp'.select_prev_item()
+            elseif require'luasnip'.jumpable(-1) then
+              require'luasnip'.jump(-1)
+            else 
+              fallback()
+            end
+          end, { "i", "s" }),
         }),
         sources = {
           { name = 'nvim_lsp' },
           { name = 'luasnip' }, -- For luasnip users.
         },
       }
+
     end
   }
   use "ellisonleao/gruvbox.nvim"
