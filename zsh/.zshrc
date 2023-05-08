@@ -51,7 +51,7 @@ bindkey '^[Oc' forward-word                                     #
 bindkey '^[Od' backward-word                                    #
 bindkey '^[[1;5D' backward-word                                 #
 bindkey '^[[1;5C' forward-word                                  #
-bindkey '^H' backward-kill-word                                 # delete previous word with ctrl+backspace
+bindkey '^H' backward-delete-char                                 # delete previous word with ctrl+backspace
 bindkey '^[[Z' undo                                             # Shift+tab undo last action
 
 ## Alias section 
@@ -73,7 +73,7 @@ if [[ ! -e "$ZINIT_HOME" ]]; then
 fi
 
 source "${ZINIT_HOME}/zinit.zsh"
-zinit self-update
+#zinit self-update
 
 autoload -Uz compinit
 compinit -d
@@ -121,9 +121,8 @@ fi
 
 # enable substitution for prompt
 setopt prompt_subst
-
 # Prompt (on left side) similar to default bash prompt, or redhat zsh prompt with colors
-PROMPT="%(!.%{$fg[red]%}[%n@%m %1~]%{$reset_color%}# .%{$fg[green]%}[%n@%m %1~]%{$reset_color%}$ "
+#
 # Maia prompt
 # PROMPT="%B%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%{$reset_color%}%b " # Print some system information when the shell is first started
 # Print a greeting message when shell is started
@@ -193,58 +192,14 @@ function git_prompt_string() {
   [ ! -n "$git_where" ] && echo "%{$fg[red]%} %(?..[%?])"
 }
 
-RPROMPT='$(git_prompt_string)'
 
-# Right prompt with exit status of previous command if not successful
- #RPROMPT="%{$fg[red]%} %(?..[%?])" 
-# Right prompt with exit status of previous command marked with ✓ or ✗
- #RPROMPT="%(?.%{$fg[green]%}✓ %{$reset_color%}.%{$fg[red]%}✗ %{$reset_color%})"
-
-# Apply different settigns for different terminals
-# case "$OSTYPE" in 
-#   darwin*)
-#     source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh	
-#     ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-#     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-#     ;;
-#   linux*)
-#     case $(basename "$(cat "/proc/$PPID/comm")") in
-#       login)
-#         	RPROMPT="%{$fg[red]%} %(?..[%?])" 
-#         	alias x='startx ~/.xinitrc'      # Type name of desired desktop after x, xinitrc is configured for it
-#         ;;
-    #  'tmux: server')
-    #        RPROMPT='$(git_prompt_string)'
-    #		## Base16 Shell color themes.
-    #		#possible themes: 3024, apathy, ashes, atelierdune, atelierforest, atelierhearth,
-    #		#atelierseaside, bespin, brewer, chalk, codeschool, colors, default, eighties, 
-    #		#embers, flat, google, grayscale, greenscreen, harmonic16, isotope, londontube,
-    #		#marrakesh, mocha, monokai, ocean, paraiso, pop (dark only), railscasts, shapesifter,
-    #		#solarized, summerfruit, tomorrow, twilight
-    #		#theme="eighties"
-    #		#Possible variants: dark and light
-    #		#shade="dark"
-    #		#BASE16_SHELL="/usr/share/zsh/scripts/base16-shell/base16-$theme.$shade.sh"
-    #		#[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
-    #		# Use autosuggestion
-    #		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-    #		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-    #  		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-    #     ;;
-#       *)
-#             RPROMPT='$(git_prompt_string)'
-#     		# Use autosuggestion
-#             #
-#     		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-#     		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-#       		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-#         ;;
-#     esac
-#     ;;
-# esac
-
-## Prompt theme
-
-#autoload -Uz promptinit
-#fpath=("$HOME/.zprompts" "$fpath[@]")
-#promptinit
+function prompt_string() {
+  LEFT="%(!.%{$fg[red]%}[%n@%m %1~]%{$reset_color%}# .%{$fg[green]%}[%n@%m %1~]"
+  RIGHT="$(git_prompt_string)"
+  #RIGHTWIDTH=$(($COLUMNS-${#LEFT}))
+  #echo $LEFT${(l:$RIGHTWIDTH::.:)RIGHT}
+  echo "$LEFT$RIGHT"
+  echo "%{$reset_color%}%(!.#.$) "
+}
+PROMPT="$(prompt_string)"
+RPROMPT=""
