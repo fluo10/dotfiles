@@ -51,26 +51,4 @@ vim.o.background = "dark" -- or "light" for light mode
 -- vim.cmd([[colorscheme gruvbox]])
 require('snippets')
 
-function isModuleAvailable(name)
-  if package.loaded[name] then
-    return true
-  else
-    for _, searcher in ipairs(package.searchers or package.loaders) do
-      local loader = searcher(name)
-      if type(loader) == 'function' then
-        package.preload[name] = loader
-        return true
-      end
-    end
-    return false
-  end
-end
-
-local external_modules = { "journal" }
-for key, value in pairs(external_modules) do
-  
-  if isModuleAvailable(value) then
-    require(value)
-  end
-end
-
+require('optional_modules')
