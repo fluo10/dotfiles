@@ -62,6 +62,17 @@ return require('packer').startup(function(use)
       }
     end
   }
+  use {
+    "neovim/nvim-lspconfig",
+    config = function()
+      local lspconfig = require("lspconfig")
+      lspconfig.rust_analyzer.setup {
+        settings = {
+          ['rust-analyzer'] = {},
+        },
+      }
+    end,
+  }
   use { 
     'nvim-treesitter/playground',
   }
@@ -105,6 +116,13 @@ return require('packer').startup(function(use)
       }
     end,
     requires = "nvim-lua/plenary.nvim"
+  }
+  use {
+    'romgrk/barbar.nvim',
+    config = function()
+      require "barbar".setup {
+      }
+    end
   }
   use {
     "nvim-tree/nvim-tree.lua",
@@ -173,6 +191,7 @@ return require('packer').startup(function(use)
   }
   use "ellisonleao/gruvbox.nvim"
   use "atelierbram/Base2Tone-nvim"
+  use 'lewis6991/gitsigns.nvim'
 
   if packer_bootstrap then
     require('packer').sync()
