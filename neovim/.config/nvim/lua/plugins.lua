@@ -99,7 +99,7 @@ return require('packer').startup(function(use)
           ["core.dirman"] = {
             config = {
               workspaces = {
-                journal = "~/.journal",
+                journal = "~/Documents/Journal",
               },
               index = "index.norg",
               default_workspace = "journal",
