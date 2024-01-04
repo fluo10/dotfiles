@@ -99,16 +99,15 @@ return require('packer').startup(function(use)
           ["core.dirman"] = {
             config = {
               workspaces = {
-                journal = "~/Documents/Journal",
+                default = "~/Documents/notebook",
               },
               index = "index.norg",
-              default_workspace = "journal",
             },
           },
           ["core.journal"] = {
             config = {
-              workspace = "journal",
-              journal_folder = "logs",
+              workspace = "default",
+              journal_folder = "journal",
               strategy = "%Y/%m/%d.norg",
             },
           },
@@ -138,7 +137,6 @@ return require('packer').startup(function(use)
     -- install jsregexp (optional!:).
     run = "make install_jsregexp"
   }
-  use 'neovim/nvim-lspconfig'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-path'
