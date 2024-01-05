@@ -99,7 +99,7 @@ return require('packer').startup(function(use)
           ["core.dirman"] = {
             config = {
               workspaces = {
-                default = "~/Documents/notebook",
+                default = "~/Documents/Notebook",
               },
               index = "index.norg",
             },
