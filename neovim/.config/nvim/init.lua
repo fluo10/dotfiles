@@ -8,8 +8,18 @@ vim.opt.expandtab = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 2
 
---require("init_packer")
---
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
 
 vim.api.nvim_create_autocmd( { 'BufNewFile', 'BufRead', }, {
   pattern = { '*.md', '*.norg' },
@@ -19,7 +29,6 @@ vim.api.nvim_create_autocmd( { 'BufNewFile', 'BufRead', }, {
   end
 })
 
-require('plugins')
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
@@ -49,16 +58,77 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
-vim.cmd([[
-  augroup packer_user_config
-    autocmd!
-    autocmd BufWritePost plugins.lua source <afile> | PackerCompile
-  augroup end
-]])
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+require("lazy").setup({
+  {
+    "nvim-tree/nvim-tree.lua",
+    version = "*",
+    lazy = false,
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      require("nvim-tree").setup {}
+    end,
+  },
+  {
+    "L3MON4D3/LuaSnip",
+    version= "v2.*",
+    build = "make install_jsregexp"
+  },
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      local lspconfig = require("lspconfig")
+      lspconfig.rust_analyzer.setup {
+        settings = {
+          ['rust-analyzer'] = {},
+        },
+      }
+      lspconfig.lua_ls.setup {
+        settings = {
+          Lua = {},
+        }
+      }
+      lspconfig.marksman.setup {}
+    end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate"
+  },
+  {
+    'romgrk/barbar.nvim',
+    dependencies = {
+      'lewis6991/gitsigns.nvim',
+      'nvim-tree/nvim-web-devicons',
+    },
+    init = function() vim.g.barbar_auto_setup = false end,
+    version = '^1.0.0',
+  },
+  {
+    "L3MON4D3/LuaSnip",
+    version = "v2.*",
+    build = "make install_jsregexp"
+  },
+  {
+    'hrsh7th/nvim-cmp',
+    event = "InsertEnter",
+    dependencies = {
+      "L3MON4D3/LuaSnip",
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-cmdline',
+      'saadparwaiz1/cmp_luasnip',
+    },
+  }
+
+})
 
 require("nvim-web-devicons").get_icons()
 require("nvim-tree").setup()
-
 
 local function open_nvim_tree(data)
 
