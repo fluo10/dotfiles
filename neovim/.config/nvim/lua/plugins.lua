@@ -190,6 +190,10 @@ return require('packer').startup(function(use)
   use "ellisonleao/gruvbox.nvim"
   use "atelierbram/Base2Tone-nvim"
   use 'lewis6991/gitsigns.nvim'
+  use {
+    'nvim-telescope/telescope.nvim', tag = '0.1.5',
+    requires = { {'nvim-lua/plenary.nvim'} }
+  }
 
   if packer_bootstrap then
     require('packer').sync()
