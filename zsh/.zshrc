@@ -91,8 +91,10 @@ export LESS_TERMCAP_us=$'\E[01;36m'
 export LESS=-r
 
 # Configuration by OS
-# if [[ "$OSTYPE" == darwin* ]] then
-#    export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlighting/highlighters
+if [[ "$OSTYPE" == darwin* ]] then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+#   export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlighting/highlighters
 #    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 #    source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
 #    source $(brew--prefix)/opt/zinit/zinit.zsh
