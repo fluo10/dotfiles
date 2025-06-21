@@ -14,3 +14,5 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[submodule]
+	lazy-supplements = git@forgejo.fireturtle.net:fluo10/lazy-supplements.git
