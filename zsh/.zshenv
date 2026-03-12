@@ -31,3 +31,6 @@ if [[ "$OSTYPE" == darwin* ]] then
     unset __conda_setup
     # <<< conda initialize <<<
 fi
+
+export EDITOR="nvim"
+export VISUAL="nvim"
