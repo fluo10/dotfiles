@@ -1,3 +1,4 @@
-typeset -U path PATH
-path=(~/.cargo/bin $path)
-export PATH
+if [ -e "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+fi
+export PATH="$HOME/.local/bin:$PATH"
